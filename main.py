@@ -19,46 +19,14 @@ def load_ridership_data():
     return pd.read_csv(file_path)
 
 
-### lior version ###
-# def load_performance_data():
-#     """
-#     Load performance data using Dask for efficient processing of large Parquet files.
-#
-#     Returns:
-#         pd.DataFrame: Processed data in Pandas format.
-#     """
-#     file_path = "data/2024_bus_performance.parquet"
-#
-#     # Check if file exists
-#     if not os.path.exists(file_path):
-#         st.error(f"Error: The file '{file_path}' was not found.")
-#         return pd.DataFrame()
-#
-#     try:
-#         # Read the Parquet file with Dask (lazy loading)
-#         ddf = dd.read_parquet(file_path, engine='pyarrow')
-#
-#         # Compute to convert to Pandas DataFrame (only use if necessary)
-#         df = ddf.compute()
-#
-#         # Display data info
-#         st.success(f"Loaded {df.shape[0]:,} rows and {df.shape[1]:,} columns from {file_path}")
-#
-#         return df
-#
-#     except Exception as e:
-#         st.error(f"Failed to load performance data: {e}")
-#         return pd.DataFrame()
-
 @st.cache_data(ttl=3600)
 def load_performance_data():
     # file_url = "https://drive.google.com/file/d/1jR7O6RUW4pAB-aWwQTCwD2BQtIHOYptp/view?usp=sharing"
     # output = "data/2024_march_bus_performance.parquet blah "
     # file_path = "data/2024_bus_performance.parquet"
-    file_path = os.path.join(os.getcwd(), "data", "2024_march_bus_performance.parquet")
-
     # gdown.download(file_url, output, fuzzy=True, quiet=False)
     # file_path = "data/2024_march_bus_performance.parquet"
+    file_path = os.path.join(os.getcwd(), "data", "2024_march_bus_performance.parquet")
     return pd.read_parquet(file_path)
 
 
