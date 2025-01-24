@@ -41,6 +41,6 @@ This dashboard leverages official government datasets from **data.gov.il** for t
 Contains weekly and daily passenger numbers across different routes and regions.  
 [original data from data.gov.il](https://data.gov.il/dataset/ridership/resource/e6cfac2f-979a-44fd-b439-ecb116ec0b16)
 
-### 2. Performance Data (Q1 2024)
+### 2. Performance Data (March 2024)
 Compares planned vs. actual bus trips to analyze service efficiency.  
 [original data from data.gov.il](https://data.gov.il/dataset/bitzua_bus_trip/resource/aba233c2-6a5a-487d-b0a8-9413ef849f15?filters=erua_hachraga_ind%3A0)
