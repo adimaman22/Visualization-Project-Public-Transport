@@ -7,6 +7,8 @@ This dashboard leverages official government datasets from **data.gov.il** for t
 
 **Explore the dashboard** [here](https://visualization-project-public-transport.streamlit.app/) and uncover insights to enhance Israel's public transportation system!
 
+[![Video Thumbnail](https://img.youtube.com/vi/1qOnw3joqaoax07dYS4Uelkm47ihcvNEx/0.jpg)](https://drive.google.com/file/d/1qOnw3joqaoax07dYS4Uelkm47ihcvNEx/view?usp=sharing)
+
 ## Key Features and Analysis Areas
 
 ### 1. Demand vs. Supply Analysis
