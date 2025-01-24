@@ -1,0 +1,10 @@
+﻿streamlit==1.41.1
+pandas==2.2.3
+numpy==2.2.2
+pyarrow==19.0.0
+plotly==5.20.0
+requests==2.32.3
+python-dateutil==2.9.0.post0
+pytz==2024.2
+watchdog==6.0.0
+gdown==5.2.0
