@@ -7,11 +7,6 @@ This dashboard leverages official government datasets from **data.gov.il** for t
 
 **Explore the dashboard** [here](https://visualization-project-public-transport.streamlit.app/) and uncover insights to enhance Israel's public transportation system!
 
-<video width="640" height="360" controls>
-  <source src="" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
 [Dashboard video](https://drive.google.com/file/d/1qOnw3joqaoax07dYS4Uelkm47ihcvNEx/view?usp=sharing)
 
 ## Key Features and Analysis Areas
