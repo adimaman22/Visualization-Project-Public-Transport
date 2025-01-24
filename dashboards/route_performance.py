@@ -37,10 +37,10 @@ from plotly.subplots import make_subplots
 #
 #     # Add metropolitan area mapping
 #     metro_mapping = {
-#         'North': ['גליל עמקים', 'חיפה'],
-#         'Center': ['תל אביב', 'ירושלים', 'מרכז'],
-#         'South': ['דרום', 'צפון הנגב', 'אשדוד', 'באר שבע', 'אשקלון'],
-#         'Inter-city': ['ירושלים קווי צפון', 'ירושלים צפון-ציר מזרחי', 'חיפה-ירושלים-אילת', 'חיפה-שרון-ירושלים', 'בין עירוני']
+#         'North': ['מתמ"ז-קריות','רמת הגולן' ,'נתניה עירוני', 'נצרת', 'חדרה' ,'גליל עמקים', 'חיפה', 'כרמיאל עירוני כרמיאל-חיפה חיפה-טבריה', 'מטרונית חיפה', 'העמקים', 'הגליל', 'קריית שמונה עירוני', 'קווי נצרת – שאמ' , 'קריית שמונה-חיפה'],
+#         'Center': ['חולון','רחובות' ,'תל אביב', 'ביתר עילית ועמק האלה', 'ירושלים', 'מרכז', 'שרון', 'בית שמש', 'חשמונאים', 'תל אביב-גליל עמקים', 'ירושלים-ב.ברק קו 402', 'ירושלים מרכז', 'רשל"צ עירוני', 'פרוזדור ירושלים', 'ירושלים-תל אביב', 'אונו-אלעד', 'רשל"צ פרברי', 'בקעת אונו אלעד', 'שרון חולון מרחבי', 'כביש 4 -ירושלים-בני ברק', 'פתח תקוה-ראש העין'],
+#         'South': ['דרום', 'צפון הנגב', 'אשדוד', 'באר שבע', 'אשקלון', 'הנגב', 'אילות', 'אילת', 'דרומי', 'צפון הנגב', 'רהט והנגב המערבי', 'הנגב'],
+#         'Inter-city': ['ירושלים קווי צפון', 'ירושלים צפון-ציר מזרחי', 'חיפה-ירושלים-אילת', 'חיפה-שרון-ירושלים', 'בין עירוני', 'ירושלים-באר שבע', 'קווי נצרת - נסיעות ותיירות', 'חיפה-ירושלים-אילת', 'חיפה-שרון-ירושלים', 'תל אביב-אשקלון', 'תל אביב-חדרה', 'אשדוד-אשקלון-ירושלים', 'תל אביב-שרון-חיפה', 'חדרה-נתניה']
 #     }
 #
 #     # Create metropolitan area column
@@ -52,6 +52,15 @@ from plotly.subplots import make_subplots
 
 
 def show(performance_data):
+
+    # Define color mapping for metro areas
+    metro_colors = {
+        'Center': '#1f77b4',  # Blue
+        'North': '#2ca02c',   # Green
+        'South': '#ff7f0e',   # Orange
+        'Inter-city': '#9467bd'  # Purple
+    }
+
     st.title("🚌 Bus Departure Time Performance Analysis")
     st.markdown("##### Identifying Routes with Poor Performance and Analyzing Delay Patterns")
 
@@ -65,20 +74,20 @@ def show(performance_data):
           - Minimum trips per line
           - Number of worst-performing routes
           - Delay threshold
-    
+
     Time Patterns Tab:
         View delays by:
           - Hour of day
           - Delay categories
           - Day of week
-    
+
     Regional Analysis Tab:
         Compare performance across:
           - Center
           - North
           - South
           - Inter-city routes
-    
+
     Key Metrics to Watch:
         - Average delay
         - Percentage of delayed trips
@@ -102,12 +111,12 @@ def show(performance_data):
             delay_threshold = st.slider("Significant delay threshold (minutes):", 1, 15, 5)
 
         # Calculate route performance metrics
-        route_stats = df.groupby(['OperatorLineId', 'operator_nm', 'cluster_nm']).agg({
+        route_stats = df.groupby(['OperatorLineId', 'operator_nm', 'cluster_nm', 'metro_area']).agg({
             'delay_minutes': ['mean', 'std', 'count'],
             'delay_category': lambda x: (x == 'On Time (±2min)').mean()
         }).reset_index()
 
-        route_stats.columns = ['line_id', 'operator', 'cluster', 'avg_delay',
+        route_stats.columns = ['line_id', 'operator', 'cluster', 'metro_area', 'avg_delay',
                                'std_delay', 'trip_count', 'on_time_ratio']
 
         # Filter and sort routes
@@ -116,34 +125,49 @@ def show(performance_data):
 
         # Create visualization for worst performing routes
         fig1 = go.Figure()
-        fig1.add_trace(
-            go.Bar(
-                x=[str(x) for x in worst_routes['line_id']],  # Convert to string for categorical
-                y=worst_routes['avg_delay'],
-                text=worst_routes['avg_delay'].round(1),
-                textposition='auto',
-                error_y=dict(
-                    type='data',
-                    array=worst_routes['std_delay'],
-                    visible=True
-                ),
-                hovertemplate=(
-                        "Line: %{x}<br>" +
-                        "Average Delay: %{y:.1f} minutes<br>" +
-                        "Trips: %{customdata[0]}<br>" +
-                        "Region: %{customdata[1]}<br>" +
-                        "On-time: %{customdata[2]:.1%}"
-                ),
-                customdata=worst_routes[['trip_count', 'cluster', 'on_time_ratio']].values
+
+        for metro_area, color in metro_colors.items():
+            filtered_routes = worst_routes[worst_routes['metro_area'] == metro_area]
+            fig1.add_trace(
+                go.Bar(
+                    x=[str(x) for x in filtered_routes['line_id']],  # Convert to string for categorical
+                    y=filtered_routes['avg_delay'],
+                    text=filtered_routes['avg_delay'].round(1),
+                    textposition='auto',
+                    marker=dict(color=color),
+                    error_y=dict(
+                        type='data',
+                        array=worst_routes['std_delay'],
+                        visible=True
+                    ),
+                    hovertemplate=(
+                            "Line: %{x}<br>" +
+                            "Average Delay: %{y:.1f} minutes<br>" +
+                            "Trips: %{customdata[0]}<br>" +
+                            "Region: %{customdata[1]}<br>" +
+                            "Metro Area: %{customdata[3]}<br>" +
+                            "On-time: %{customdata[2]:.1%}"
+                    ),
+                    customdata=worst_routes[['trip_count', 'cluster', 'on_time_ratio', 'metro_area']].values,
+                    name=metro_area
+                )
             )
-        )
 
         fig1.update_layout(
             title=f"Top {n_worst_routes} Routes with Poorest Performance",
             xaxis_title="Route Number",
             yaxis_title="Average Delay (minutes)",
             height=600,
-            xaxis={'type': 'category'}  # Force categorical axis
+            xaxis={'type': 'category'},  # Force categorical axis
+            showlegend=True,
+            legend=dict(
+                title="Metro Area",
+                orientation="h",  # Horizontal legend
+                y=1.02,
+                x=0.5,
+                xanchor='center',
+                yanchor='bottom'
+            )
         )
 
         st.plotly_chart(fig1, use_container_width=True)
@@ -284,7 +308,7 @@ def show(performance_data):
 
         # Metropolitan area filter
         metro_area = st.radio(
-            "Select Metropolitan Area:", ["Center", "North",  "South", "Inter-city", "All"], horizontal=True
+            "Select Metropolitan Area:", ["Center", "North", "South", "Inter-city", "All"], horizontal=True
         )
 
         # Filter data based on selection
@@ -296,35 +320,76 @@ def show(performance_data):
             title_prefix = "Performance Across All Regions"
 
         # Regional analysis
-        cluster_stats = df_filtered.groupby('cluster_nm').agg({
+        cluster_stats = df_filtered.groupby(['cluster_nm', 'metro_area']).agg({
             'delay_minutes': ['mean', 'std', 'count'],
             'delay_category': lambda x: (x == 'On Time (±2min)').mean()
         }).reset_index()
 
-        cluster_stats.columns = ['region', 'avg_delay', 'std_delay', 'trips', 'on_time_ratio']
+        cluster_stats.columns = ['region', 'metro_area', 'avg_delay', 'std_delay', 'trips', 'on_time_ratio']
 
         fig4 = go.Figure()
-        fig4.add_trace(
-            go.Bar(
-                x=cluster_stats['region'],
-                y=cluster_stats['avg_delay'],
-                error_y=dict(type='data', array=cluster_stats['std_delay']),
-                hovertemplate=(
-                        "Region: %{x}<br>" +
-                        "Average Delay: %{y:.1f} minutes<br>" +
-                        "Trips: %{customdata[0]:,}<br>" +
-                        "On-time: %{customdata[1]:.1%}<extra></extra>"
-                ),
-                customdata=cluster_stats[['trips', 'on_time_ratio']].values
-            )
-        )
 
-        fig4.update_layout(
-            title=title_prefix,
-            xaxis_title="Region",
-            yaxis_title="Average Delay (minutes)",
-            height=700
-        )
+        if metro_area == "All":
+            for area, color in metro_colors.items():
+                area_data = cluster_stats[cluster_stats['metro_area'] == area]
+                fig4.add_trace(
+                    go.Bar(
+                        x=area_data['region'],
+                        y=area_data['avg_delay'],
+                        marker=dict(color=color),
+                        name=area,  # Legend entry per metro_area
+                        error_y=dict(type='data', array=area_data['std_delay']),
+                        hovertemplate=(
+                                "Region: %{x}<br>" +
+                                "Average Delay: %{y:.1f} minutes<br>" +
+                                "Trips: %{customdata[0]:,}<br>" +
+                                "On-time: %{customdata[1]:.1%}<extra></extra>"
+                        ),
+                        customdata=area_data[['trips', 'on_time_ratio']].values
+                    )
+                )
+
+            fig4.update_layout(
+                title=title_prefix,
+                xaxis_title="Region",
+                yaxis_title="Average Delay (minutes)",
+                showlegend=True,  # Enable legend
+                height=700,
+                legend=dict(
+                    title="Metro Area",
+                    orientation="h",  # Horizontal legend
+                    y=1.02,
+                    x=0.5,
+                    xanchor='center',
+                    yanchor='bottom'
+                )
+            )
+
+        else:
+            fig4.add_trace(
+                go.Bar(
+                    x=cluster_stats['region'],
+                    y=cluster_stats['avg_delay'],
+                    marker=dict(color=metro_colors.get(metro_area, '#7f7f7f')),
+                    name=metro_area,  # Legend for selected metro_area
+                    error_y=dict(type='data', array=cluster_stats['std_delay']),
+                    hovertemplate=(
+                            "Region: %{x}<br>" +
+                            "Average Delay: %{y:.1f} minutes<br>" +
+                            "Trips: %{customdata[0]:,}<br>" +
+                            "On-time: %{customdata[1]:.1%}<extra></extra>"
+                    ),
+                    customdata=cluster_stats[['trips', 'on_time_ratio']].values
+                )
+            )
+
+            fig4.update_layout(
+                title=title_prefix,
+                xaxis_title="Region",
+                yaxis_title="Average Delay (minutes)",
+                xaxis=dict(tickangle=90),
+                height=700
+            )
 
         st.plotly_chart(fig4, use_container_width=True)
 

@@ -101,7 +101,7 @@ def show(ridership_data, performance_data):
     st.markdown("""
     #### Available Datasets:
     - **Ridership Data (2024):** Provides weekly and daily passenger numbers across different routes and regions. [🔗](https://data.gov.il/dataset/ridership/resource/e6cfac2f-979a-44fd-b439-ecb116ec0b16)
-    - **Performance Data (Q1 2024):** Compares planned vs. actual bus trips to analyze service efficiency. [🔗](https://data.gov.il/dataset/bitzua_bus_trip/resource/aba233c2-6a5a-487d-b0a8-9413ef849f15?filters=erua_hachraga_ind%3A0)
+    - **Performance Data (March 2024):** Compares planned vs. actual bus trips to analyze service efficiency. [🔗](https://data.gov.il/dataset/bitzua_bus_trip/resource/aba233c2-6a5a-487d-b0a8-9413ef849f15?filters=erua_hachraga_ind%3A0)
     """)
 
     # Select dataset
