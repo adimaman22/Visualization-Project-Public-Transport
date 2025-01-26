@@ -124,7 +124,7 @@ def show(ridership_data, performance_data):
     with st.expander("🔍 Filter Data"):
         st.write("Select columns to filter the data:")
         columns_to_show = st.multiselect("Select columns:", data.columns.tolist(), default=data.columns.tolist())
-        num_rows = st.slider("Select number of rows to display:", min_value=5, max_value=len(data), value=5)
+        num_rows = st.slider("Select number of rows to display:", min_value=5, max_value=100, value=5)
 
     # Display filtered table
     st.dataframe(data[columns_to_show].head(num_rows))
