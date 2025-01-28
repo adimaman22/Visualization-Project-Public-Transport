@@ -201,7 +201,7 @@ def show(performance_data):
 
         fig2.add_trace(
             go.Histogram(
-                x=route_data['delay_minutes'],
+                x=route_data[route_data['delay_minutes'] <= 20]['delay_minutes'],
                 nbinsx=30,
                 name="Delay Distribution"
             ),
