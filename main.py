@@ -76,7 +76,7 @@ if page == "🏠 Home":
               Identify regions where there is a mismatch between passenger demand and bus service frequency.
             - **Variation Over Time:**  
               Explore patterns in demand and availability based on hourly, daily, and weekly trends.
-            - **Identifying Low-Performance Routes:**  
+            - **Identifying Under-Performance Routes:**  
               Detect routes with the lowest adherence to scheduled departure times by comparing planned vs. actual trip execution.
     
             **Please select an option from the sidebar to explore insights and findings.**
